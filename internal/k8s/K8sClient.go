@@ -58,12 +58,13 @@ func (c *K8sClient) getServices() (services *corev1.ServiceList, err error) {
 		slog.Warn("Failed to retreive services", slog.Int("try", error_count), slog.Int("max_tries", retry_count))
 		time.Sleep(2 * time.Second)
 	}
-	err = fmt.Errorf("Failed to connect to kubernetes service")
+	err = fmt.Errorf("failed to connect to kubernetes service")
 	return
 }
 
 func (c *K8sClient) fetchService(service *corev1.Service) (err error) {
 	service, err = c.client.CoreV1().Services(service.Namespace).Get(context.TODO(), service.Name, metav1.GetOptions{})
+	slog.Debug("Fetched service", slog.String("service", service.Name))
 	return
 }
 
@@ -82,7 +83,7 @@ func (c *K8sClient) getLoadBalancerPools() (results *LoadBalancerPoolList, err e
 		slog.Warn("Failed to retreive lbpools", slog.Int("try", error_count), slog.Int("max_tries", retry_count))
 		time.Sleep(2 * time.Second)
 	}
-	err = fmt.Errorf("Failed to connect to kubernetes service")
+	err = fmt.Errorf("failed to connect to kubernetes service")
 	return
 }
 
@@ -144,6 +145,9 @@ func (c *K8sClient) CheckDeploymentDeleted(deploymentName string, deploymentName
 func (c *K8sClient) RemoveDeploymentFinalizer(deploymentName string, deploymentNamespace string) (err error) {
 	var deployment *appsv1.Deployment
 	deployment, err = c.client.AppsV1().Deployments(deploymentNamespace).Get(context.Background(), deploymentName, metav1.GetOptions{})
+	if err != nil {
+		return
+	}
 
 	deployment.Finalizers = slices.Delete(deployment.Finalizers, slices.Index(deployment.Finalizers, "fgt.sncs-uk.io/controller"), slices.Index(deployment.Finalizers, "fgt.sncs-uk.io/controller")+1)
 	_, err = c.client.AppsV1().Deployments(deploymentName).Update(context.TODO(), deployment, metav1.UpdateOptions{})

@@ -108,5 +108,4 @@ func (v *Vip) Save(client *FortigateClient) (err error) {
 		v.vip6.Comment = fmt.Sprintf("%s/%s/%s", v.Owner, v.Namespace, v.Service)
 		return client.updateOrCreateVip6(v.vip6)
 	}
-
 }

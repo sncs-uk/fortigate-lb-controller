@@ -42,6 +42,11 @@ func (l *VipList) Fetch() (ok bool) {
 	}
 	list6, err := l.client.getVip6s()
 
+	if err != nil {
+		ok = false
+		return
+	}
+
 	for _, jsonVip := range list6 {
 		vip := new(Vip)
 		err = vip.fromJsonObject6(jsonVip)
@@ -53,7 +58,6 @@ func (l *VipList) Fetch() (ok bool) {
 		l.vips[jsonVip.Name] = vip
 	}
 	return
-
 }
 
 func (l *VipList) Items() (items map[string]*Vip) {

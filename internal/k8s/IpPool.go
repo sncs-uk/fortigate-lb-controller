@@ -17,15 +17,13 @@ type IpPool struct {
 
 	availableIpv4 []string
 	availableIpv6 []string
-
-	client *K8sClient
 }
 
 func (p *IpPool) fromCRD(crd *LoadBalancerPool) (err error) {
 	err = nil
 
 	if crd.Spec.IPv4 == "" && crd.Spec.IPv6 == "" {
-		err = fmt.Errorf("Neither IPv4 or IPv6 prefix given")
+		err = fmt.Errorf("neither IPv4 or IPv6 prefix given")
 		return
 	}
 	p.Name = crd.Metadata.Name
@@ -145,20 +143,20 @@ func (p *IpPool) removeAvailable(address netip.Addr) error {
 			return nil
 		}
 	} else {
-		return fmt.Errorf("Invalid IP type")
+		return fmt.Errorf("invalid IP type")
 	}
-	return fmt.Errorf("That address is not available in this pool")
+	return fmt.Errorf("that address is not available in this pool")
 }
 
 func (p *IpPool) Assign(preferred string) (string, error) {
 	addr, err := netip.ParseAddr(preferred)
 	if err != nil {
-		return "", fmt.Errorf("Invalid address: %s", preferred)
+		return "", fmt.Errorf("invalid address: %s", preferred)
 	}
 	if addr.Is4() {
 		if !p.hasV4() {
 			// We don't have a v4
-			return "", fmt.Errorf("Pool does not have an IPv4 scope")
+			return "", fmt.Errorf("pool does not have an IPv4 scope")
 		}
 		if p.Contains(addr) && p.isAvailableV4(addr) {
 			// We should assign this one then
@@ -176,7 +174,7 @@ func (p *IpPool) Assign(preferred string) (string, error) {
 	if addr.Is6() {
 		if !p.hasV6() {
 			// We don't have a v4
-			return "", fmt.Errorf("Pool does not have an IPv6 scope")
+			return "", fmt.Errorf("pool does not have an IPv6 scope")
 		}
 		if p.Contains(addr) && p.isAvailableV6(addr) {
 			// We should assign this one then
@@ -191,7 +189,7 @@ func (p *IpPool) Assign(preferred string) (string, error) {
 		}
 		return address, nil
 	}
-	return "", fmt.Errorf("Unrecognised IP address")
+	return "", fmt.Errorf("unrecognised IP address")
 }
 
 func (p *IpPool) PrintStats(level slog.Level) {

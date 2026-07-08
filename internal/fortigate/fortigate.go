@@ -26,40 +26,40 @@ func Init() (*FortigateClient, error) {
 	var err error
 	_, err = auth.GetEnvToken()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvToken")
+		return nil, fmt.Errorf("error GetEnvToken")
 	}
 	_, err = auth.GetEnvHostname()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvHostname")
+		return nil, fmt.Errorf("error GetEnvHostname")
 	}
 	_, err = auth.GetEnvVdom()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvVdom")
+		return nil, fmt.Errorf("error GetEnvVdom")
 	}
 	_, err = auth.GetEnvCABundle()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvCABundle")
+		return nil, fmt.Errorf("error GetEnvCABundle")
 	}
 	b, err := auth.GetEnvInsecure()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvInsecure")
+		return nil, fmt.Errorf("error GetEnvInsecure")
 	}
 	config.InsecureSkipVerify = b
 	_, err = auth.GetEnvPeerAuth()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvHTTPProxy")
+		return nil, fmt.Errorf("error GetEnvHTTPProxy")
 	}
 	_, err = auth.GetEnvCaCert()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvHTTPProxy")
+		return nil, fmt.Errorf("error GetEnvHTTPProxy")
 	}
 	_, err = auth.GetEnvClientCert()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvHTTPProxy")
+		return nil, fmt.Errorf("error GetEnvHTTPProxy")
 	}
 	_, err = auth.GetEnvHTTPProxy()
 	if err != nil {
-		return nil, fmt.Errorf("Error GetEnvHTTPProxy")
+		return nil, fmt.Errorf("error GetEnvHTTPProxy")
 	}
 
 	tr := &http.Transport{
@@ -69,7 +69,7 @@ func Init() (*FortigateClient, error) {
 		var httpProxy *url.URL
 		httpProxy, err := url.Parse(auth.HTTPProxy)
 		if err != nil {
-			return nil, fmt.Errorf("Error parsing HTTP proxy: %w", err)
+			return nil, fmt.Errorf("error parsing HTTP proxy: %w", err)
 		}
 		tr.Proxy = http.ProxyURL(httpProxy)
 	}
@@ -82,6 +82,10 @@ func Init() (*FortigateClient, error) {
 	slog.Info("Connecting to FortiGate API", slog.String("host", auth.Hostname))
 
 	forticlient, err := forticlient.NewClient(auth, client)
+	if err != nil {
+		slog.Error("Error connecting to FortiGate API", slog.String("error_message", err.Error()))
+		return nil, err
+	}
 
 	err = forticlient.CheckUP()
 	if err != nil {
@@ -97,11 +101,6 @@ func Init() (*FortigateClient, error) {
 	return fgclient, nil
 }
 
-func (c *FortigateClient) fetchVip(vip *forticlient.JSONFirewallObjectVip) (err error) {
-	vip, err = c.client.ReadFirewallObjectVip(vip.Name)
-	return
-}
-
 func (c *FortigateClient) getVips() (vips []*forticlient.JSONFirewallObjectVip, err error) {
 	error_count := 0
 
@@ -114,7 +113,7 @@ func (c *FortigateClient) getVips() (vips []*forticlient.JSONFirewallObjectVip, 
 		slog.Warn("Failed to retrieve VIPs", slog.Int("try", error_count), slog.Int("max_tries", retry_count))
 		time.Sleep(2 * time.Second)
 	}
-	err = fmt.Errorf("Failed to connect to fortigate")
+	err = fmt.Errorf("failed to connect to fortigate")
 	return
 }
 
@@ -136,11 +135,6 @@ func (c *FortigateClient) updateOrCreateVip(vip *forticlient.JSONFirewallObjectV
 	return
 }
 
-func (c *FortigateClient) fetchVip6(vip *forticlient.JSONFirewallObjectVip6) (err error) {
-	vip, err = c.client.ReadFirewallObjectVip6(vip.Name)
-	return
-}
-
 func (c *FortigateClient) getVip6s() (vips []*forticlient.JSONFirewallObjectVip6, err error) {
 	error_count := 0
 
@@ -153,7 +147,7 @@ func (c *FortigateClient) getVip6s() (vips []*forticlient.JSONFirewallObjectVip6
 		slog.Warn("Failed to retrieve VIPs", slog.Int("try", error_count), slog.Int("max_tries", retry_count))
 		time.Sleep(2 * time.Second)
 	}
-	err = fmt.Errorf("Failed to connect to fortigate")
+	err = fmt.Errorf("failed to connect to fortigate")
 	return
 }
 

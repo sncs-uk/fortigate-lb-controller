@@ -24,7 +24,6 @@ type Service struct {
 }
 
 func (s *Service) createFromV1(service *corev1.Service, kubernetes_client *K8sClient) (err error) {
-	err = nil
 	s.client = kubernetes_client
 	s.service = service
 	err = s.parseV1Service()
@@ -213,7 +212,7 @@ func (s *Service) commitSpec() (ok bool) {
 			difference = true
 		}
 	}
-	if difference == false {
+	if !difference {
 		return
 	}
 	s.service.Annotations = s.Annotations
@@ -240,7 +239,7 @@ func (s *Service) CheckExistingLbIps(pools map[string]*IpPool) {
 			s.RemoveExternalAddress(ip)
 			continue
 		}
-		pool, _ := pools[s.desiredPool]
+		pool := pools[s.desiredPool]
 		if pool.Contains(ip) {
 			slog.Debug("Pool contains IP", slog.String("pool", pool.Name), slog.String("address", ip.String()))
 			continue

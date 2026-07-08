@@ -43,7 +43,6 @@ func (l *ServiceList) GetByName(name string) (service *Service, ok bool) {
 }
 
 func (l *ServiceList) GetByVipName(vipName string) (service *Service, ok bool) {
-	ok = true
 	var serviceVipName string
 	for _, service = range l.services {
 		serviceVipName, ok = service.GetVipNameV4()
