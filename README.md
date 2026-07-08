@@ -9,4 +9,4 @@ Installation is done via Helm. The chart is published as an OCI image under
 `ghcr.io/sncs-uk/helm-fortigate-lb-controller`
 
 To install, run 
-`helm upgrade --install fortigate-lb-controller oci://ghcr.io/sncs-uk/helm-fortigate-lb-controller --version 0.1.0`
+`helm upgrade --install fortigate-lb-controller oci://ghcr.io/sncs-uk/helm-fortigate-lb-controller --version 0.1.1`
