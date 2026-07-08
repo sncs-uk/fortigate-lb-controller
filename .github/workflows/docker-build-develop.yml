@@ -2,10 +2,6 @@ name: Build develop docker image
 
 on:
   push:
-    paths:
-      - cmd/**
-      - internal/**
-      - Dockerfile
     branches:
       - main
 env:
