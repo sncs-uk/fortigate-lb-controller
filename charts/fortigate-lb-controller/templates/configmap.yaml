@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "fortigate-lb-controller.labels" . | nindent 4 }}
 data:
-  FORTIOS_ACCESS_HOSTNAME: {{ .Values.controller.fortigate.hostname }}
-  FORTIOS_ACCESS_VDOM: {{ .Values.controller.fortigate.vdom }}
-  FORTIOS_INSECURE: {{ .Values.controller.fortigate.insecure }}
-  LOG_LEVEL: {{ .Values.controller.loglevel }}
-  VIP_HERITAGE: {{ .Values.controller.heritgate }}
+  FORTIOS_ACCESS_HOSTNAME: "{{ .Values.controller.fortigate.hostname }}"
+  FORTIOS_ACCESS_VDOM: "{{ .Values.controller.fortigate.vdom }}"
+  FORTIOS_INSECURE: "{{ .Values.controller.fortigate.insecure }}"
+  LOG_LEVEL: "{{ .Values.controller.loglevel }}"
+  VIP_HERITAGE: "{{ .Values.controller.heritage }}"
