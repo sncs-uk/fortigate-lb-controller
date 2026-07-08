@@ -2,6 +2,7 @@ package mainlogic
 
 import (
 	"log/slog"
+	"net/netip"
 	"os"
 	"time"
 
@@ -133,6 +134,22 @@ func checkDeployment() {
 func RunLoop() {
 	// Get LB pools
 	pools, vips, services = GetObjects()
+
+	for _, vip := range vips.Items() {
+		extip, err := netip.ParseAddr(vip.Extip)
+		if err != nil {
+			continue
+		}
+		for _, pool := range pools.Items() {
+			if pool.Contains(extip) {
+				if !pool.MustAssign(extip) {
+					// There was an error assigning this VIP, that means there's a fault somewhere
+					slog.Error("Could not mark address as used", slog.String("address", extip.String()), slog.String("pool", pool.Name))
+					continue
+				}
+			}
+		}
+	}
 
 	slog.Debug("Processing services")
 	for _, service := range services.Items() {

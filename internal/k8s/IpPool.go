@@ -192,6 +192,26 @@ func (p *IpPool) Assign(preferred string) (string, error) {
 	return "", fmt.Errorf("unrecognised IP address")
 }
 
+func (p *IpPool) MustAssign(address netip.Addr) (ok bool) {
+	if address.Is4() {
+		if p.isAvailableV4(address) {
+			p.removeAvailable(address)
+			return true
+		} else {
+			return false
+		}
+	}
+	if address.Is6() {
+		if p.isAvailableV4(address) {
+			p.removeAvailable(address)
+			return true
+		} else {
+			return false
+		}
+	}
+	return false
+}
+
 func (p *IpPool) PrintStats(level slog.Level) {
 	slog.Log(context.Background(), level, "Pool Stats (v4)", slog.String("pool", p.Name), slog.Int("pool_size", p.sizeV4()), slog.Int("used_addresses", p.usedV4()), slog.Int("available_addresses", p.availableV4()))
 	slog.Log(context.Background(), level, "Pool Stats (v6)", slog.String("pool", p.Name), slog.Int("pool_size", p.sizeV6()), slog.Int("used_addresses", p.usedV6()), slog.Int("available_addresses", p.availableV6()))
