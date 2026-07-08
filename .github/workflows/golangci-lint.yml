@@ -2,9 +2,15 @@
 name: linting
 on:
   push:
+    paths:
+      - cmd/**
+      - internal/**
     branches:
       - main
   pull_request:
+    paths:
+      - cmd/**
+      - internal/**
     branches:
       - main
 
