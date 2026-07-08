@@ -41,7 +41,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: develop
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.repoisitory }}:develop
           labels: ${{ steps.meta.outputs.labels }}
         
       - name: Generate artifact attestation
