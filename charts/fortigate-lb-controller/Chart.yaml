@@ -1,5 +1,5 @@
 apiVersion: v2
-name: fortigate-lb-controller
+name: fortigate-lb-controller-helm
 description: FortiGate LoadBalancer controller for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
