@@ -12,6 +12,7 @@ var ProgramLevel = new(slog.LevelVar)
 const VipV4Annotation string = "fgt.sncs-uk.io/ipv4-vip"
 const VipV6Annotation string = "fgt.sncs-uk.io/ipv6-vip"
 const PoolAnnotation string = "fgt.sncs-uk.io/ip-pool"
+const Finalizer string = "fgt.sncs-uk.io/controller"
 
 func LoadConfig() {
 	setLogLevel()

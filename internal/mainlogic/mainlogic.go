@@ -19,15 +19,11 @@ var pools *k8s.IpPoolList
 var services *k8s.ServiceList
 var vips *fortigate.VipList
 
-var deploymentNamespace string
-var deploymentName string
-
 var isKilled bool
 
 func Run() {
 	config.LoadConfig()
 	startupChecks()
-	getDeployment()
 
 	isKilled = false
 
@@ -38,16 +34,6 @@ func Run() {
 		time.Sleep(2 * time.Second)
 		checkDeployment()
 	}
-}
-
-func getDeployment() {
-	var err error
-	deploymentName, deploymentNamespace, err = kubernetes_client.GetMyDeployment()
-	if err != nil {
-		slog.Error("Unable to get self deployment", slog.String("error", err.Error()))
-		os.Exit(1)
-	}
-	slog.Info("Identified own deployment", slog.String("name", deploymentName), slog.String("namespace", deploymentNamespace))
 }
 
 func startupChecks() {
@@ -91,9 +77,15 @@ func GetObjects() (pools *k8s.IpPoolList, vips *fortigate.VipList, services *k8s
 }
 
 func checkDeployment() {
+	// First, we check if the deployment has the finaliser on it
+	err := kubernetes_client.CheckFinalizers()
+	if err != nil {
+		slog.Warn("Error checking finalizers", slog.String("error", err.Error()))
+	}
+
 	// Check if the deployment has been marked for removal
 
-	deleted, err := kubernetes_client.CheckDeploymentDeleted(deploymentName, deploymentNamespace)
+	deleted, err := kubernetes_client.CheckDeploymentDeleted()
 	if err != nil {
 		slog.Warn("Couldn't get deployment", slog.String("error", err.Error()))
 		return
@@ -124,7 +116,7 @@ func checkDeployment() {
 
 		// Ok, we've removed everything, we can remove the finalizer
 		slog.Info("Removing finalizer")
-		err := kubernetes_client.RemoveDeploymentFinalizer(deploymentName, deploymentNamespace)
+		err := kubernetes_client.RemoveFinalizers()
 		if err != nil {
 			slog.Warn("Unable to remove finalizer", slog.String("error", err.Error()))
 		}
