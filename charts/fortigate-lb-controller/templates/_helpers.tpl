@@ -66,8 +66,8 @@ Create the name of the service account to use
 Create the name of the configmap / secret
 */}}
 {{- define "fortigate-lb-controller.configName" -}}
-{{- include "fortigate-lb-controller.fullname" . }}-configuration
+{{- include "fortigate-lb-controller.name" . }}-configuration
 {{- end }}
 {{- define "fortigate-lb-controller.secretName" -}}
-{{- include "fortigate-lb-controller.fullname" . }}-credentials
+{{- include "fortigate-lb-controller.name" . }}-credentials
 {{- end }}

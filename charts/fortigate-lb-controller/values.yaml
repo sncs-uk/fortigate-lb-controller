@@ -29,6 +29,9 @@ controller:
     username: ""
     # Username/password authentication - not recommended
     password: ""
+  
+  # Existing secret that will be mounted as env vars
+  existingSecret: ""
 
   # Heritage is what the controller marks as the owner of the VIPs. Only relavent if you have multiple
   # controllers managing VIPs in the same VDOM
