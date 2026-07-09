@@ -1,5 +1,5 @@
 apiVersion: v2
-name: helm-fortigate-lb-controller-crds
+name: fortigate-lb-controller-crds
 description: FortiGate LoadBalancer controller for Kubernetes - CRDs
 
 # A chart can be either an 'application' or a 'library' chart.
