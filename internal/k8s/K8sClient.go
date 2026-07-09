@@ -9,7 +9,6 @@ import (
 
 	"github.com/sncs-uk/fortigate-lb-controller/internal/eslog"
 	corev1 "k8s.io/api/core/v1"
-	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -19,15 +18,6 @@ const retry_count int = 5
 
 type K8sClient struct {
 	client *kubernetes.Clientset
-
-	deploymentName     string
-	namespace          string
-	serviceAccountName string
-
-	clusterRoleBindings []*rbacv1.ClusterRoleBinding
-	roleBindings        []*rbacv1.RoleBinding
-	clusterRoles        []*rbacv1.ClusterRole
-	roles               []*rbacv1.Role
 }
 
 func Init() (client *K8sClient, err error) {

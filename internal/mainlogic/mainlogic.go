@@ -20,13 +20,9 @@ var pools *k8s.IpPoolList
 var services *k8s.ServiceList
 var vips *fortigate.VipList
 
-var isKilled bool
-
 func Run() {
 	config.LoadConfig()
 	startupChecks()
-
-	isKilled = false
 
 	go poolStats()
 
