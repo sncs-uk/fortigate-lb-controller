@@ -4,8 +4,6 @@ metadata:
   name: {{ include "fortigate-lb-controller.fullname" . }}
   labels:
     {{- include "fortigate-lb-controller.labels" . | nindent 4 }}
-  finalizers:
-    - fgt.sncs-uk.io/controller
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
