@@ -48,16 +48,21 @@ func (p *IpPool) fromCRD(crd *LoadBalancerPool) (err error) {
 			addr, _ := netip.ParseAddr(v4)
 			p.removeAvailable(addr)
 		}
+		eslog.Noisy("Processed v4")
 	}
 	if crd.Spec.IPv6 != "" {
+		eslog.Noisy("Processing v6")
 		var net6 netip.Prefix
 		net6, err = netip.ParsePrefix(crd.Spec.IPv6)
+		eslog.Noisy("Parsed prefix", slog.String("prefix", crd.Spec.IPv6))
 		if err != nil {
+			eslog.Noisy("Invalid v6 prefix")
 			return
 		}
 		var ips []string
 		ips, err = ciliumip.PrefixToIps(net6.String(), 0)
 		if err != nil {
+			eslog.Noisy("Couldn't create list of addresses")
 			return
 		}
 
@@ -68,6 +73,7 @@ func (p *IpPool) fromCRD(crd *LoadBalancerPool) (err error) {
 			addr, _ := netip.ParseAddr(v6)
 			p.removeAvailable(addr)
 		}
+		eslog.Noisy("Processed v6")
 	}
 	return
 }

@@ -31,7 +31,9 @@ func (l *IpPoolList) Fetch() (ok bool) {
 
 	l.pools = make(map[string]*IpPool)
 	for _, lbpool := range lbpools.Items {
+		eslog.Noisy("Processing pool", slog.String("pool", lbpool.Metadata.Name))
 		pool := new(IpPool)
+		eslog.Noisy("Parsing pool", slog.String("pool", lbpool.Metadata.Name))
 		err = pool.fromCRD(&lbpool)
 		if err != nil {
 			eslog.Warn("Failed to parse pool", slog.Any("lb_pool", lbpool.Metadata.Name))
